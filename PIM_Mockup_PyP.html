@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyP PIM – Mockup Interactivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#4F46E5;--primary-dark:#3730A3;--primary-light:#EEF2FF;--primary-border:#C7D2FE;
+  --secondary:#0369A1;--accent:#059669;--warning:#D97706;--danger:#DC2626;
+  --bg:#F8FAFC;--surface:#FFFFFF;--border:#E2E8F0;--border-dark:#CBD5E1;
+  --text:#0F172A;--text-2:#475569;--text-3:#94A3B8;
+  --sidebar-w:240px;--header-h:60px;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.08),0 2px 4px -1px rgba(0,0,0,.06);
+  --font:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;font-size:14px;line-height:1.5}
+
+/* ─── SIDEBAR ───────────────────────────────────────────── */
+.sidebar{width:var(--sidebar-w);background:#1E1B4B;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-logo .brand{font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.3px}
+.sidebar-logo .sub{font-size:11px;color:#A5B4FC;font-weight:500;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.sidebar-section{padding:12px 0 4px}
+.sidebar-section-label{font-size:10px;font-weight:600;color:#6366F1;text-transform:uppercase;letter-spacing:.8px;padding:0 18px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:#C7D2FE;cursor:pointer;border-radius:0;transition:.15s;font-size:13.5px;font-weight:450;border-left:3px solid transparent;user-select:none}
+.nav-item:hover{background:rgba(99,102,241,.15);color:#fff}
+.nav-item.active{background:rgba(99,102,241,.2);color:#fff;border-left-color:#818CF8;font-weight:600}
+.nav-item .icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:#DC2626;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.nav-badge.warn{background:#D97706}
+.nav-badge.ok{background:#059669}
+.sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;background:#4F46E5;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.user-info .name{font-size:12.5px;color:#fff;font-weight:500}
+.user-info .role{font-size:11px;color:#A5B4FC}
+
+/* ─── MAIN ───────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.topbar-title{font-size:16px;font-weight:600;color:var(--text);flex:1}
+.topbar-breadcrumb{font-size:13px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.topbar-breadcrumb span{color:var(--text-3)}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.content{flex:1;overflow-y:auto;padding:24px}
+.screen{display:none}
+.screen.active{display:block}
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:.15s;white-space:nowrap;font-family:var(--font)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg);border-color:var(--border-dark)}
+.btn-ghost{background:transparent;color:var(--text-2);padding:6px 10px}
+.btn-ghost:hover{background:var(--bg);color:var(--text)}
+.btn-danger{background:#FEF2F2;color:var(--danger);border:1px solid #FECACA}
+.btn-danger:hover{background:#FEE2E2}
+.btn-sm{padding:5px 10px;font-size:12.5px}
+
+/* ─── CARDS ──────────────────────────────────────────────── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:600;color:var(--text)}
+.card-body{padding:20px}
+
+/* ─── METRICS ────────────────────────────────────────────── */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);transition:.2s}
+.metric-card:hover{border-color:var(--primary-border);box-shadow:var(--shadow-md)}
+.metric-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.metric-value{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.metric-label{font-size:12.5px;color:var(--text-2);margin-top:4px;font-weight:500}
+.metric-delta{font-size:11.5px;margin-top:8px;font-weight:500}
+.delta-up{color:var(--accent)}
+.delta-warn{color:var(--warning)}
+.delta-danger{color:var(--danger)}
+
+/* ─── TABLE ──────────────────────────────────────────────── */
+.table-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
+.table-toolbar{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.search-input{flex:1;max-width:320px;padding:7px 12px 7px 34px;border:1px solid var(--border);border-radius:var(--radius);font-size:13.5px;font-family:var(--font);background:var(--bg);color:var(--text);outline:none;transition:.15s;position:relative}
+.search-input:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+.search-wrap{position:relative;flex:1;max-width:320px}
+.search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
+table{width:100%;border-collapse:collapse}
+thead th{background:#F8FAFC;text-align:left;padding:10px 14px;font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+thead th.sortable{cursor:pointer}
+thead th.sortable:hover{color:var(--primary)}
+tbody tr{border-bottom:1px solid var(--border);transition:.1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#FAFBFF}
+tbody td{padding:10px 14px;font-size:13.5px;color:var(--text);vertical-align:middle}
+.product-thumb{width:36px;height:36px;border-radius:6px;background:#F1F5F9;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.product-name-cell{display:flex;align-items:center;gap:10px}
+.product-name{font-weight:500;color:var(--text);cursor:pointer}
+.product-name:hover{color:var(--primary)}
+.product-sku{font-size:11.5px;color:var(--text-3);margin-top:1px}
+.cb{width:16px;height:16px;cursor:pointer;accent-color:var(--primary)}
+
+/* ─── BADGES ─────────────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11.5px;font-weight:600}
+.badge-draft{background:#F1F5F9;color:#475569}
+.badge-active{background:#D1FAE5;color:#065F46}
+.badge-archived{background:#F3F4F6;color:#6B7280}
+.badge-error{background:#FEE2E2;color:#B91C1C}
+.badge-pending{background:#FEF3C7;color:#92400E}
+.badge-synced{background:#D1FAE5;color:#065F46}
+.badge-info{background:var(--primary-light);color:var(--primary-dark)}
+
+/* ─── PROGRESS ───────────────────────────────────────────── */
+.progress-wrap{display:flex;align-items:center;gap:8px}
+.progress-bar{flex:1;height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;max-width:80px}
+.progress-fill{height:100%;border-radius:3px;transition:.3s}
+.progress-pct{font-size:12px;font-weight:600;white-space:nowrap}
+
+/* ─── FORMS ──────────────────────────────────────────────── */
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:5px}
+.form-label.required::after{content:' *';color:var(--danger)}
+.form-input,.form-select,.form-textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13.5px;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;transition:.15s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-hint{font-size:11.5px;color:var(--text-3);margin-top:4px}
+.char-count{font-size:11px;color:var(--text-3);text-align:right;margin-top:2px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* ─── TABS ───────────────────────────────────────────────── */
+.tabs{display:flex;border-bottom:2px solid var(--border);gap:0;margin-bottom:24px}
+.tab{padding:10px 18px;font-size:13.5px;font-weight:500;color:var(--text-2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;white-space:nowrap}
+.tab:hover{color:var(--primary)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.tab-badge{display:inline-block;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;margin-left:4px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ─── PRODUCT EDITOR ────────────────────────────────────── */
+.editor-layout{display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start}
+.editor-main{min-width:0}
+.editor-sidebar{display:flex;flex-direction:column;gap:16px}
+.completeness-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px}
+.completeness-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px}
+.comp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.comp-tab{font-size:12.5px;color:var(--text-2)}
+.comp-pct{font-size:12px;font-weight:600}
+.comp-bar{height:5px;background:#E2E8F0;border-radius:3px;margin-bottom:2px;overflow:hidden}
+.comp-fill{height:100%;border-radius:3px}
+.attr-section{margin-bottom:24px}
+.attr-section-title{font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.attr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.attr-full{grid-column:1/-1}
+.chip-input{display:flex;flex-wrap:wrap;gap:6px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);min-height:38px;align-items:center;background:var(--surface)}
+.chip{background:var(--primary-light);color:var(--primary-dark);padding:2px 8px;border-radius:12px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:4px}
+.chip .rm{cursor:pointer;opacity:.6;font-size:10px}
+.chip .rm:hover{opacity:1}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+.media-item{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--bg);position:relative;cursor:pointer}
+.media-item img{width:100%;height:80px;object-fit:cover;display:block}
+.media-placeholder{height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg)}
+.media-label{font-size:10.5px;color:var(--text-2);padding:4px 6px;text-align:center;border-top:1px solid var(--border)}
+.media-badge-main{position:absolute;top:4px;left:4px;background:var(--primary);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:32px;text-align:center;cursor:pointer;transition:.2s;background:var(--bg)}
+.upload-zone:hover{border-color:var(--primary);background:var(--primary-light)}
+.upload-zone .icon{font-size:36px;margin-bottom:8px}
+.upload-zone .title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
+.upload-zone .sub{font-size:12px;color:var(--text-2)}
+
+/* ─── FAMILIES ───────────────────────────────────────────── */
+.families-layout{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.families-list .list-item{padding:10px 14px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:.15s}
+.families-list .list-item:hover{background:var(--bg)}
+.families-list .list-item.active{background:var(--primary-light);color:var(--primary-dark)}
+.families-list .list-item .name{font-size:13.5px;font-weight:500}
+.families-list .list-item .count{font-size:11.5px;color:var(--text-3)}
+.attr-group-card{margin-bottom:16px}
+.attr-group-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;cursor:pointer}
+.attr-group-name{font-size:13.5px;font-weight:600;color:var(--text)}
+.attr-group-body{border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);overflow:hidden}
+.attr-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:0;border-bottom:1px solid var(--border);align-items:center}
+.attr-row:last-child{border-bottom:none}
+.attr-row>div{padding:9px 14px;font-size:13px}
+.attr-row.header>div{font-size:11.5px;font-weight:600;color:var(--text-2);background:#F8FAFC;text-transform:uppercase;letter-spacing:.4px}
+.attr-type-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--bg);border:1px solid var(--border);border-radius:12px;font-size:11.5px;color:var(--text-2)}
+
+/* ─── IMPORT ────────────────────────────────────────────── */
+.import-steps{display:flex;align-items:center;gap:0;margin-bottom:28px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 28px;box-shadow:var(--shadow)}
+.step{display:flex;align-items:center;gap:10px;flex:1}
+.step:last-child{flex:0}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.step-num.done{background:var(--accent);color:#fff}
+.step-num.active{background:var(--primary);color:#fff}
+.step-num.pending{background:#E2E8F0;color:var(--text-2)}
+.step-label{font-size:13px;font-weight:500;white-space:nowrap}
+.step-label.active{color:var(--primary)}
+.step-label.done{color:var(--accent)}
+.step-label.pending{color:var(--text-2)}
+.step-connector{flex:1;height:2px;background:#E2E8F0;margin:0 10px}
+.step-connector.done{background:var(--accent)}
+.mapping-table th{background:#F8FAFC;padding:10px 14px;text-align:left;font-size:12px;font-weight:600;color:var(--text-2);border-bottom:1px solid var(--border)}
+.mapping-table td{padding:8px 14px;border-bottom:1px solid var(--border);font-size:13.5px}
+.mapping-table tr:last-child td{border-bottom:none}
+.validation-row.error{background:#FFF5F5}
+.validation-row.warn{background:#FFFBEB}
+.validation-row td:first-child{font-weight:600}
+
+/* ─── SYNC ───────────────────────────────────────────────── */
+.sync-status-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow)}
+.sync-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.sync-dot.ok{background:var(--accent)}
+.sync-dot.warn{background:var(--warning)}
+.sync-dot.error{background:var(--danger)}
+.sync-info .title{font-size:14px;font-weight:600;color:var(--text)}
+.sync-info .sub{font-size:12.5px;color:var(--text-2);margin-top:2px}
+
+/* ─── ACTIVITY FEED ──────────────────────────────────────── */
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.activity-icon.create{background:#D1FAE5}
+.activity-icon.edit{background:#DBEAFE}
+.activity-icon.import{background:#FEF3C7}
+.activity-icon.sync{background:#E0E7FF}
+.activity-icon.error{background:#FEE2E2}
+.activity-text{flex:1}
+.activity-text .main{font-size:13.5px;color:var(--text);line-height:1.4}
+.activity-text .meta{font-size:11.5px;color:var(--text-3);margin-top:2px}
+.activity-time{font-size:11.5px;color:var(--text-3);white-space:nowrap;padding-top:2px}
+
+/* ─── MISC ───────────────────────────────────────────────── */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:16px;font-weight:600;color:var(--text)}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-2)}
+.empty-state .icon{font-size:48px;margin-bottom:12px}
+.empty-state h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.tooltip{position:relative}
+.tooltip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1E293B;color:#fff;font-size:11.5px;padding:4px 8px;border-radius:4px;white-space:nowrap;pointer-events:none;opacity:0;transition:.15s}
+.tooltip:hover::after{opacity:1}
+.select-all-bar{background:var(--primary-light);border:1px solid var(--primary-border);border-radius:var(--radius);padding:8px 14px;display:flex;align-items:center;gap:12px;margin-bottom:12px;display:none}
+.select-all-bar.visible{display:flex}
+.log-entry{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.log-entry:last-child{border-bottom:none}
+.log-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.log-status.ok{background:var(--accent)}
+.log-status.error{background:var(--danger)}
+.log-status.pending{background:var(--warning)}
+.page-note{background:#FFF7ED;border:1px solid #FED7AA;border-radius:var(--radius);padding:10px 14px;font-size:12.5px;color:#92400E;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.toggle-track{width:36px;height:20px;border-radius:10px;background:#E2E8F0;position:relative;transition:.2s;flex-shrink:0}
+.toggle-track.on{background:var(--primary)}
+.toggle-thumb{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-track.on .toggle-thumb{left:18px}
+.toggle-label{font-size:13.5px;color:var(--text)}
+
+/* ─── MOCKUP BANNER ──────────────────────────────────────── */
+.mockup-banner{position:fixed;top:0;left:0;right:0;z-index:9999;background:#1E1B4B;color:#A5B4FC;text-align:center;font-size:11.5px;padding:4px;font-family:var(--font);letter-spacing:.3px}
+body{padding-top:22px}
+.sidebar{padding-top:0}
+
+/* ─── KANBAN ─────────────────────────────────────────────── */
+.kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kanban-col{background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.kanban-col-header{padding:12px 14px;font-size:12.5px;font-weight:600;color:var(--text);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.kanban-col-header .dot{width:8px;height:8px;border-radius:50%;margin-right:6px}
+.kanban-col-body{padding:10px;display:flex;flex-direction:column;gap:8px}
+.kanban-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;cursor:pointer;transition:.15s;box-shadow:var(--shadow)}
+.kanban-card:hover{border-color:var(--primary-border);box-shadow:var(--shadow-md)}
+.kanban-card .name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+.kanban-card .meta{font-size:11.5px;color:var(--text-2)}
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">🎨 MOCKUP INTERACTIVO – PyP PIM v1.0 | Documento de validación de UX – No es el producto final | Agentcy · Mayo 2026</div>
+
+<!-- ─── SIDEBAR ──────────────────────────────────────────────────────── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">PyP PIM</div>
+    <div class="sub">Gestión de Catálogo</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Principal</div>
+    <div class="nav-item active" onclick="showScreen('dashboard')">
+      <span class="icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showScreen('catalog')">
+      <span class="icon">📦</span> Catálogo
+      <span class="nav-badge warn">12</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Configuración</div>
+    <div class="nav-item" onclick="showScreen('families')">
+      <span class="icon">🏷️</span> Familias y Atributos
+    </div>
+    <div class="nav-item" onclick="showScreen('import')">
+      <span class="icon">⬆️</span> Importar Productos
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Integración</div>
+    <div class="nav-item" onclick="showScreen('sync')">
+      <span class="icon">🔄</span> Sync Base.com
+      <span class="nav-badge">3</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="avatar">JB</div>
+    <div class="user-info">
+      <div class="name">Juan Beltramini</div>
+      <div class="role">Administrador</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── MAIN CONTENT ────────────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar" id="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-actions" id="topbar-actions">
+      <button class="btn btn-secondary btn-sm" onclick="showScreen('import')">⬆️ Importar</button>
+      <button class="btn btn-primary btn-sm" onclick="showScreen('editor')">+ Nuevo Producto</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════════════════════════════════════════════════════════════
+         SCREEN 1 – DASHBOARD
+    ═════════════════════════════════════════════════════════════ -->
+    <div class="screen active" id="screen-dashboard">
+
+      <div class="page-note">⚡ Última sincronización con Base.com: hace 2 horas · <b>3 productos con error</b> · <a href="#" onclick="showScreen('sync');return false;" style="color:inherit;font-weight:600">Ver errores →</a></div>
+
+      <!-- KPI Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon" style="background:#EEF2FF;color:#4F46E5">📦</div>
+          <div class="metric-value">1.248</div>
+          <div class="metric-label">SKUs en catálogo</div>
+          <div class="metric-delta delta-up">↑ 48 esta semana</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon" style="background:#D1FAE5;color:#059669">✅</div>
+          <div class="metric-value">73%</div>
+          <div class="metric-label">Completitud promedio</div>
+          <div class="metric-delta delta-warn">340 productos incompletos</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon" style="background:#FEF3C7;color:#D97706">⏳</div>
+          <div class="metric-value">127</div>
+          <div class="metric-label">Pendientes de sync</div>
+          <div class="metric-delta delta-warn">↑ desde ayer</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon" style="background:#FEE2E2;color:#DC2626">❌</div>
+          <div class="metric-value">3</div>
+          <div class="metric-label">Errores de sync</div>
+          <div class="metric-delta delta-danger">Requieren atención</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Activity Feed -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Actividad Reciente</div>
+            <button class="btn btn-ghost btn-sm">Ver todo</button>
+          </div>
+          <div class="card-body" style="padding:8px 20px">
+            <div class="activity-item">
+              <div class="activity-icon import">⬆️</div>
+              <div class="activity-text">
+                <div class="main"><b>Importación completada:</b> "Philips_Enero2026.xlsx" — 48 productos creados, 2 errores</div>
+                <div class="meta">jmbeltramini · Hoy 09:14</div>
+              </div>
+              <div class="activity-time">09:14</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon edit">✏️</div>
+              <div class="activity-text">
+                <div class="main">Editado <b>Samsung Galaxy A55 5G 256GB</b> – Descripción y atributos actualizados</div>
+                <div class="meta">mrodriguez · Hoy 08:47</div>
+              </div>
+              <div class="activity-time">08:47</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon sync">🔄</div>
+              <div class="activity-text">
+                <div class="main">Sincronización Base.com – 124 productos actualizados correctamente</div>
+                <div class="meta">Sistema · Hoy 06:00</div>
+              </div>
+              <div class="activity-time">06:00</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon error">❌</div>
+              <div class="activity-text">
+                <div class="main">Error sync <b>Xiaomi Redmi Note 13</b> – Campo "color_hex" inválido en Base.com</div>
+                <div class="meta">Sistema · Ayer 18:03</div>
+              </div>
+              <div class="activity-time">Ayer</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon create">➕</div>
+              <div class="activity-text">
+                <div class="main">Nuevo producto creado: <b>Auriculares JBL Tune 770NC</b></div>
+                <div class="meta">jmbeltramini · Ayer 16:22</div>
+              </div>
+              <div class="activity-time">Ayer</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions + Stats -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Acciones Rápidas</div></div>
+            <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <button class="btn btn-secondary" style="justify-content:flex-start;padding:12px 14px" onclick="showScreen('editor')">➕ Nuevo Producto</button>
+              <button class="btn btn-secondary" style="justify-content:flex-start;padding:12px 14px" onclick="showScreen('import')">⬆️ Importar Excel</button>
+              <button class="btn btn-secondary" style="justify-content:flex-start;padding:12px 14px" onclick="showScreen('catalog')">📋 Ver incompletos</button>
+              <button class="btn btn-secondary" style="justify-content:flex-start;padding:12px 14px" onclick="showScreen('sync')">🔄 Sync Base.com</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Por Familia</div></div>
+            <div class="card-body" style="padding:12px 20px">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="progress-wrap"><span style="font-size:12.5px;color:var(--text-2);width:140px;flex-shrink:0">Smartphones</span><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:78%;background:#4F46E5"></div></div><span class="progress-pct" style="color:#4F46E5">78%</span><span style="font-size:11.5px;color:var(--text-3);margin-left:4px">/ 312 SKUs</span></div>
+                <div class="progress-wrap"><span style="font-size:12.5px;color:var(--text-2);width:140px;flex-shrink:0">TV & Audio</span><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:65%;background:#0369A1"></div></div><span class="progress-pct" style="color:#0369A1">65%</span><span style="font-size:11.5px;color:var(--text-3);margin-left:4px">/ 248 SKUs</span></div>
+                <div class="progress-wrap"><span style="font-size:12.5px;color:var(--text-2);width:140px;flex-shrink:0">Electrodomésticos</span><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:82%;background:#059669"></div></div><span class="progress-pct" style="color:#059669">82%</span><span style="font-size:11.5px;color:var(--text-3);margin-left:4px">/ 410 SKUs</span></div>
+                <div class="progress-wrap"><span style="font-size:12.5px;color:var(--text-2);width:140px;flex-shrink:0">Computación</span><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:54%;background:#D97706"></div></div><span class="progress-pct" style="color:#D97706">54%</span><span style="font-size:11.5px;color:var(--text-3);margin-left:4px">/ 278 SKUs</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SCREEN 2 – CATALOG
+    ═════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-catalog">
+
+      <!-- View switcher -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)">
+            <button class="btn btn-ghost btn-sm" id="view-table" onclick="setView('table')" style="border-radius:0;background:#EEF2FF;color:var(--primary);border-right:1px solid var(--border)">📋 Tabla</button>
+            <button class="btn btn-ghost btn-sm" id="view-cards" onclick="setView('cards')" style="border-radius:0;border-right:1px solid var(--border)">🖼️ Tarjetas</button>
+            <button class="btn btn-ghost btn-sm" id="view-kanban" onclick="setView('kanban')" style="border-radius:0">📌 Kanban</button>
+          </div>
+          <span style="font-size:12.5px;color:var(--text-3)">1.248 productos · <b style="color:var(--text-2)">12 incompletos</b></span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm">⬇️ Exportar</button>
+          <button class="btn btn-primary btn-sm" onclick="showScreen('editor')">+ Nuevo Producto</button>
+        </div>
+      </div>
+
+      <!-- Selection bar -->
+      <div class="select-all-bar" id="select-bar">
+        <span style="font-size:13px;color:var(--primary-dark);font-weight:500">3 productos seleccionados</span>
+        <div style="display:flex;gap:8px;margin-left:auto">
+          <button class="btn btn-secondary btn-sm">✏️ Editar campo</button>
+          <button class="btn btn-secondary btn-sm">🔄 Sincronizar</button>
+          <button class="btn btn-secondary btn-sm">⬇️ Exportar</button>
+          <button class="btn btn-danger btn-sm">🗑️ Eliminar</button>
+        </div>
+      </div>
+
+      <!-- TABLE VIEW -->
+      <div id="catalog-table-view">
+        <div class="table-container">
+          <div class="table-toolbar">
+            <div class="search-wrap">
+              <input class="search-input" type="text" placeholder="Buscar por nombre, SKU, EAN, marca…">
+            </div>
+            <button class="btn btn-secondary btn-sm">🏷️ Familia</button>
+            <button class="btn btn-secondary btn-sm">📊 Completitud</button>
+            <button class="btn btn-secondary btn-sm">🔄 Estado Sync</button>
+            <button class="btn btn-ghost btn-sm">Más filtros</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" class="cb" onchange="toggleSelectBar(this)"></th>
+                <th></th>
+                <th class="sortable">Nombre ↕</th>
+                <th>SKU</th>
+                <th>Familia</th>
+                <th>Marca</th>
+                <th>Completitud</th>
+                <th>Estado</th>
+                <th>Base.com</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" class="cb"></td>
+                <td><div class="product-thumb">📱</div></td>
+                <td><div class="product-name-cell"><div><div class="product-name" onclick="showScreen('editor')">Samsung Galaxy A55 5G 256GB Azul</div><div class="product-sku">SKU-00148 · EAN 7509218150215</div></div></div></td>
+                <td style="color:var(--text-2)">SKU-00148</td>
+                <td><span class="badge badge-info">Smartphones</span></td>
+                <td>Samsung</td>
+                <td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:92%;background:var(--accent)"></div></div><span class="progress-pct" style="color:var(--accent)">92%</span></div></td>
+                <td><span class="badge badge-active">● Activo</span></td>
+                <td><span class="badge badge-synced">✓ Sync</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="showScreen('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="cb"></td>
+                <td><div class="product-thumb">📺</div></td>
+                <td><div class="product-name-cell"><div><div class="product-name" onclick="showScreen('editor')">Smart TV LG 55" OLED 4K C4</div><div class="product-sku">SKU-00312 · EAN 8806098765432</div></div></div></td>
+                <td style="color:var(--text-2)">SKU-00312</td>
+                <td><span class="badge badge-info">TV & Audio</span></td>
+                <td>LG</td>
+                <td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:58%;background:var(--warning)"></div></div><span class="progress-pct" style="color:var(--warning)">58%</span></div></td>
+                <td><span class="badge badge-draft">○ Borrador</span></td>
+                <td><span class="badge badge-pending">⏳ Pendiente</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="showScreen('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="cb"></td>
+                <td><div class="product-thumb">🎧</div></td>
+                <td><div class="product-name-cell"><div><div class="product-name" onclick="showScreen('editor')">Auriculares Sony WH-1000XM5</div><div class="product-sku">SKU-00891 · EAN 4548736132023</div></div></div></td>
+                <td style="color:var(--text-2)">SKU-00891</td>
+                <td><span class="badge badge-info">Audio</span></td>
+                <td>Sony</td>
+                <td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--accent)"></div></div><span class="progress-pct" style="color:var(--accent)">100%</span></div></td>
+                <td><span class="badge badge-active">● Activo</span></td>
+                <td><span class="badge badge-error">✕ Error</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="showScreen('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="cb"></td>
+                <td><div class="product-thumb">💻</div></td>
+                <td><div class="product-name-cell"><div><div class="product-name" onclick="showScreen('editor')">Notebook Lenovo IdeaPad 3 15"</div><div class="product-sku">SKU-01024 · EAN 0195892069120</div></div></div></td>
+                <td style="color:var(--text-2)">SKU-01024</td>
+                <td><span class="badge badge-info">Computación</span></td>
+                <td>Lenovo</td>
+                <td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:35%;background:var(--danger)"></div></div><span class="progress-pct" style="color:var(--danger)">35%</span></div></td>
+                <td><span class="badge badge-draft">○ Borrador</span></td>
+                <td><span class="badge" style="background:#F1F5F9;color:var(--text-2)">○ Sin publicar</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="showScreen('editor')">Editar →</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="cb"></td>
+                <td><div class="product-thumb">🧺</div></td>
+                <td><div class="product-name-cell"><div><div class="product-name" onclick="showScreen('editor')">Lavarropas Whirlpool 9kg Carga Frontal</div><div class="product-sku">SKU-00567 · EAN 7790388123456</div></div></div></td>
+                <td style="color:var(--text-2)">SKU-00567</td>
+                <td><span class="badge badge-info">Electrodomésticos</span></td>
+                <td>Whirlpool</td>
+                <td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:88%;background:var(--accent)"></div></div><span class="progress-pct" style="color:var(--accent)">88%</span></div></td>
+                <td><span class="badge badge-active">● Activo</span></td>
+                <td><span class="badge badge-synced">✓ Sync</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="showScreen('editor')">Editar →</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);background:#FAFBFF">
+            <span style="font-size:12.5px;color:var(--text-2)">Mostrando 1–25 de 1.248 resultados</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-secondary btn-sm">← Anterior</button>
+              <button class="btn btn-primary btn-sm">Siguiente →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KANBAN VIEW (hidden by default) -->
+      <div id="catalog-kanban-view" style="display:none">
+        <div class="kanban-board">
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div><span class="dot" style="background:#94A3B8;display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px"></span>Borrador</div><span style="font-size:11.5px;color:var(--text-3)">48</span></div>
+            <div class="kanban-col-body">
+              <div class="kanban-card" onclick="showScreen('editor')"><div class="name">Notebook Lenovo IdeaPad 3 15"</div><div class="meta" style="display:flex;align-items:center;gap:6px;margin-top:6px"><span class="badge badge-info" style="font-size:10.5px">Computación</span><span style="font-size:11px;color:var(--danger)">35%</span></div></div>
+              <div class="kanban-card" onclick="showScreen('editor')"><div class="name">Tablet Xiaomi Pad 6 Pro 256GB</div><div class="meta" style="display:flex;align-items:center;gap:6px;margin-top:6px"><span class="badge badge-info" style="font-size:10.5px">Smartphones</span><span style="font-size:11px;color:var(--danger)">28%</span></div></div>
+            </div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div><span class="dot" style="background:#D97706;display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px"></span>Incompleto</div><span style="font-size:11.5px;color:var(--text-3)">292</span></div>
+            <div class="kanban-col-body">
+              <div class="kanban-card" onclick="showScreen('editor')"><div class="name">Smart TV LG 55" OLED 4K C4</div><div class="meta" style="display:flex;align-items:center;gap:6px;margin-top:6px"><span class="badge badge-info" style="font-size:10.5px">TV & Audio</span><span style="font-size:11px;color:var(--warning)">58%</span></div></div>
+              <div class="kanban-card" onclick="showScreen('editor')"><div class="name">Aspiradora Dyson V15 Detect</div><div class="meta" style="display:flex;align-items:center;gap:6px;margin-top:6px"><span class="badge badge-info" style="font-size:10.5px">Electrodomésticos</span><span style="font-size:11px;color:var(--warning)">72%</span></div></div>
+            </div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div><span class="dot" style="background:#059669;display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px"></span>Completo</div><span style="font-size:11.5px;color:var(--text-3)">908</span></div>
+            <div class="kanban-col-body">
+              <div class="kanban-card" onclick="showScreen('editor')"><div class="name">Samsung Galaxy A55 5G 256GB</div><div class="meta" style="display:flex;align-items:center;gap:6px;margin-top:6px"><span class="badge badge-info" style="font-size:10.5px">Smartphones</span><span style="font-size:11px;color:var(--accent)">92%</span></div></div>
+              <div class="kanban-card" onclick="showScreen('editor')"><div class="name">Auriculares Sony WH-1000XM5</div><div class="meta" style="display:flex;align-items:center;gap:6px;margin-top:6px"><span class="badge badge-info" style="font-size:10.5px">Audio</span><span style="font-size:11px;color:var(--accent)">100%</span></div></div>
+            </div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div><span class="dot" style="background:#4F46E5;display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px"></span>Publicado</div><span style="font-size:11.5px;color:var(--text-3)">756</span></div>
+            <div class="kanban-col-body">
+              <div class="kanban-card" onclick="showScreen('editor')"><div class="name">Lavarropas Whirlpool 9kg</div><div class="meta" style="display:flex;align-items:center;gap:6px;margin-top:6px"><span class="badge badge-info" style="font-size:10.5px">Electrodomésticos</span><span class="badge badge-synced" style="font-size:10px">✓ Sync</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARDS VIEW (hidden by default) -->
+      <div id="catalog-cards-view" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+          <div class="card" style="cursor:pointer" onclick="showScreen('editor')">
+            <div style="height:120px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:48px;border-radius:11px 11px 0 0">📱</div>
+            <div style="padding:12px">
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3">Samsung Galaxy A55 5G 256GB Azul</div>
+              <div style="font-size:11.5px;color:var(--text-3);margin-bottom:8px">SKU-00148 · Samsung</div>
+              <div class="progress-wrap"><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:92%;background:var(--accent)"></div></div><span class="progress-pct" style="color:var(--accent)">92%</span></div>
+            </div>
+          </div>
+          <div class="card" style="cursor:pointer" onclick="showScreen('editor')">
+            <div style="height:120px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:48px;border-radius:11px 11px 0 0">📺</div>
+            <div style="padding:12px">
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3">Smart TV LG 55" OLED 4K C4</div>
+              <div style="font-size:11.5px;color:var(--text-3);margin-bottom:8px">SKU-00312 · LG</div>
+              <div class="progress-wrap"><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:58%;background:var(--warning)"></div></div><span class="progress-pct" style="color:var(--warning)">58%</span></div>
+            </div>
+          </div>
+          <div class="card" style="cursor:pointer" onclick="showScreen('editor')">
+            <div style="height:120px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:48px;border-radius:11px 11px 0 0">🎧</div>
+            <div style="padding:12px">
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3">Auriculares Sony WH-1000XM5</div>
+              <div style="font-size:11.5px;color:var(--text-3);margin-bottom:8px">SKU-00891 · Sony</div>
+              <div class="progress-wrap"><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:100%;background:var(--accent)"></div></div><span class="progress-pct" style="color:var(--accent)">100%</span></div>
+            </div>
+          </div>
+          <div class="card" style="cursor:pointer" onclick="showScreen('editor')">
+            <div style="height:120px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:48px;border-radius:11px 11px 0 0">💻</div>
+            <div style="padding:12px">
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3">Notebook Lenovo IdeaPad 3 15"</div>
+              <div style="font-size:11.5px;color:var(--text-3);margin-bottom:8px">SKU-01024 · Lenovo</div>
+              <div class="progress-wrap"><div class="progress-bar" style="max-width:none;flex:1"><div class="progress-fill" style="width:35%;background:var(--danger)"></div></div><span class="progress-pct" style="color:var(--danger)">35%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SCREEN 3 – PRODUCT EDITOR
+    ═════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-editor">
+
+      <!-- Product Header -->
+      <div class="card" style="margin-bottom:20px">
+        <div style="padding:16px 20px;display:flex;align-items:center;gap:16px">
+          <div style="width:56px;height:56px;background:#EEF2FF;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0">📱</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px">Samsung Galaxy A55 5G 256GB Azul</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <span style="font-size:12.5px;color:var(--text-2)">SKU-00148</span>
+              <span style="color:var(--border)">·</span>
+              <span class="badge badge-info">Smartphones</span>
+              <span class="badge badge-active">● Activo</span>
+              <span class="badge badge-synced">✓ Sync hace 2h</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-secondary">🔄 Sync ahora</button>
+            <button class="btn btn-secondary">⋯</button>
+            <button class="btn btn-primary">💾 Guardar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <div class="editor-main">
+          <!-- Tabs -->
+          <div class="tabs">
+            <div class="tab active" onclick="showTab(this,'tab-general')">General</div>
+            <div class="tab" onclick="showTab(this,'tab-attrs')">Atributos <span class="tab-badge">4</span></div>
+            <div class="tab" onclick="showTab(this,'tab-media')">Medios</div>
+            <div class="tab" onclick="showTab(this,'tab-variants')">Variantes</div>
+            <div class="tab" onclick="showTab(this,'tab-channels')">Canales</div>
+            <div class="tab" onclick="showTab(this,'tab-history')">Historial</div>
+          </div>
+
+          <!-- Tab: General -->
+          <div class="tab-content active" id="tab-general">
+            <div class="form-row">
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label required">Nombre del producto</label>
+                <input type="text" class="form-input" value="Samsung Galaxy A55 5G 256GB Azul" maxlength="120">
+                <div class="char-count">38 / 120 caracteres</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label required">SKU Interno</label>
+                <input type="text" class="form-input" value="SKU-00148">
+                <div class="form-hint">Código único de identificación interna. No se puede modificar una vez creado.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">EAN / GTIN (código de barras)</label>
+                <input type="text" class="form-input" value="7509218150215">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label required">Familia de producto</label>
+                <select class="form-select">
+                  <option selected>Smartphones</option>
+                  <option>TV & Audio</option>
+                  <option>Electrodomésticos</option>
+                  <option>Computación</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Marca / Fabricante</label>
+                <input type="text" class="form-input" value="Samsung">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label required">Estado</label>
+                <select class="form-select">
+                  <option value="draft">Borrador</option>
+                  <option value="active" selected>Activo</option>
+                  <option value="archived">Archivado</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Modelo</label>
+                <input type="text" class="form-input" value="SM-A556ELBAARL">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required">Descripción corta</label>
+              <input type="text" class="form-input" value="Smartphone Samsung Galaxy A55 5G, pantalla AMOLED 6.6", 256GB, cámara 50MP con OIS.">
+              <div class="form-hint">Máximo 250 caracteres. Se usa en fichas de producto y vistas rápidas.</div>
+              <div class="char-count">96 / 250 caracteres</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Descripción larga</label>
+              <textarea class="form-textarea" style="min-height:120px">El Samsung Galaxy A55 5G combina un diseño premium con rendimiento de alto nivel. Su pantalla Super AMOLED de 6.6" con resolución FHD+ ofrece colores vivos y negros profundos. El sistema de cámara triple de 50MP con estabilización óptica captura imágenes nítidas en cualquier condición de luz. Procesado por el chip Exynos 1480 con 8 GB de RAM para una experiencia fluida en multitarea y gaming.</textarea>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+                <div class="form-hint">Texto enriquecido soportado.</div>
+                <button class="btn btn-secondary btn-sm">✨ Generar con IA</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tags / Palabras clave</label>
+              <div class="chip-input">
+                <span class="chip">samsung <span class="rm">✕</span></span>
+                <span class="chip">galaxy a55 <span class="rm">✕</span></span>
+                <span class="chip">5G <span class="rm">✕</span></span>
+                <span class="chip">smartphone <span class="rm">✕</span></span>
+                <input type="text" placeholder="Añadir tag…" style="border:none;outline:none;font-size:13px;font-family:var(--font);min-width:120px;background:transparent">
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Atributos -->
+          <div class="tab-content" id="tab-attrs">
+            <div class="attr-section">
+              <div class="attr-section-title">📡 Conectividad y Red</div>
+              <div class="attr-grid">
+                <div class="form-group">
+                  <label class="form-label required">Tecnología de red</label>
+                  <select class="form-select"><option selected>5G / 4G LTE / 3G / 2G</option><option>4G LTE</option><option>3G</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label required">Conectividad WiFi</label>
+                  <select class="form-select"><option selected>WiFi 6 (802.11ax)</option><option>WiFi 5</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Bluetooth</label>
+                  <input type="text" class="form-input" value="5.3">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">NFC</label>
+                  <select class="form-select"><option selected>Sí</option><option>No</option></select>
+                </div>
+              </div>
+            </div>
+            <div class="attr-section">
+              <div class="attr-section-title">📸 Cámara</div>
+              <div class="attr-grid">
+                <div class="form-group">
+                  <label class="form-label required">Megapixeles cámara principal</label>
+                  <input type="number" class="form-input" value="50">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Estabilización óptica (OIS)</label>
+                  <select class="form-select"><option selected>Sí</option><option>No</option></select>
+                </div>
+                <div class="form-group attr-full">
+                  <label class="form-label">Configuración de cámaras traseras</label>
+                  <div class="chip-input">
+                    <span class="chip">50MP Gran angular <span class="rm">✕</span></span>
+                    <span class="chip">12MP Ultra gran angular <span class="rm">✕</span></span>
+                    <span class="chip">5MP Macro <span class="rm">✕</span></span>
+                    <input type="text" placeholder="Añadir…" style="border:none;outline:none;font-size:13px;font-family:var(--font);min-width:100px;background:transparent">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="attr-section">
+              <div class="attr-section-title">⚙️ Hardware</div>
+              <div class="attr-grid">
+                <div class="form-group">
+                  <label class="form-label required">Procesador</label>
+                  <input type="text" class="form-input" value="Samsung Exynos 1480">
+                </div>
+                <div class="form-group">
+                  <label class="form-label required">RAM (GB)</label>
+                  <input type="number" class="form-input" value="8">
+                </div>
+                <div class="form-group">
+                  <label class="form-label required">Almacenamiento (GB)</label>
+                  <input type="number" class="form-input" value="256">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Capacidad batería (mAh)</label>
+                  <input type="number" class="form-input" value="5000">
+                </div>
+              </div>
+            </div>
+            <div class="attr-section">
+              <div class="attr-section-title">📐 Dimensiones y Peso</div>
+              <div class="form-row-3">
+                <div class="form-group">
+                  <label class="form-label">Alto (mm)</label>
+                  <input type="number" class="form-input" value="161.1">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ancho (mm)</label>
+                  <input type="number" class="form-input" value="76.9">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Profundidad (mm)</label>
+                  <input type="number" class="form-input" value="8.2">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Peso (gramos)</label>
+                  <input type="number" class="form-input" value="213">
+                </div>
+                <div class="form-group">
+                  <label class="form-label required">Color</label>
+                  <input type="text" class="form-input" value="Azul Oscuro (Awesome Iceblue)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Medios -->
+          <div class="tab-content" id="tab-media">
+            <div class="section-header">
+              <div>
+                <div class="section-title">Imágenes del Producto</div>
+                <div style="font-size:12.5px;color:var(--text-2);margin-top:2px">Máximo 10 imágenes · JPG, PNG, WebP · Máx. 5 MB c/u · Arrastrá para reordenar</div>
+              </div>
+              <button class="btn btn-secondary">⬆️ Subir imágenes</button>
+            </div>
+            <div class="media-grid">
+              <div class="media-item"><div class="media-placeholder">📱</div><div class="media-badge-main">Principal</div><div class="media-label">frente.jpg · 1.2 MB</div></div>
+              <div class="media-item"><div class="media-placeholder" style="font-size:20px;color:var(--text-3)">📱</div><div class="media-label">lateral.jpg · 0.9 MB</div></div>
+              <div class="media-item"><div class="media-placeholder" style="font-size:20px;color:var(--text-3)">📱</div><div class="media-label">detalle.jpg · 1.1 MB</div></div>
+              <div class="media-item" style="border:2px dashed var(--border);cursor:pointer;background:#FAFBFF">
+                <div class="media-placeholder" style="font-size:24px;color:var(--text-3)">+</div>
+                <div class="media-label" style="color:var(--primary)">Agregar imagen</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="section-header">
+              <div>
+                <div class="section-title">Documentos</div>
+                <div style="font-size:12.5px;color:var(--text-2);margin-top:2px">Fichas técnicas, manuales, certificados · Solo PDF</div>
+              </div>
+              <button class="btn btn-secondary">⬆️ Subir documento</button>
+            </div>
+            <div class="upload-zone">
+              <div class="icon">📄</div>
+              <div class="title">Arrastrá un PDF aquí</div>
+              <div class="sub">o hacé click para seleccionar un archivo</div>
+            </div>
+          </div>
+
+          <!-- Tab: Variantes -->
+          <div class="tab-content" id="tab-variants">
+            <div class="page-note">ℹ️ Las variantes son versiones de un mismo producto que difieren en atributos como color o almacenamiento.</div>
+            <div class="table-container">
+              <div class="table-toolbar" style="justify-content:space-between">
+                <span style="font-size:13.5px;font-weight:500">3 variantes activas</span>
+                <button class="btn btn-secondary btn-sm">+ Agregar variante</button>
+              </div>
+              <table>
+                <thead><tr><th>Variante</th><th>Color</th><th>Almacenamiento</th><th>SKU variante</th><th>Estado</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td>Galaxy A55 5G 128GB Azul</td><td>Azul Oscuro</td><td>128 GB</td><td>SKU-00146</td><td><span class="badge badge-active">● Activo</span></td><td><button class="btn btn-ghost btn-sm">Editar</button></td></tr>
+                  <tr><td><b>Galaxy A55 5G 256GB Azul</b> (este)</td><td>Azul Oscuro</td><td>256 GB</td><td>SKU-00148</td><td><span class="badge badge-active">● Activo</span></td><td><button class="btn btn-ghost btn-sm">—</button></td></tr>
+                  <tr><td>Galaxy A55 5G 256GB Negro</td><td>Negro Noche</td><td>256 GB</td><td>SKU-00149</td><td><span class="badge badge-draft">○ Borrador</span></td><td><button class="btn btn-ghost btn-sm">Editar</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab: Canales -->
+          <div class="tab-content" id="tab-channels">
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-header">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div style="width:36px;height:36px;background:#D1FAE5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">🔄</div>
+                  <div><div class="card-title">Base.com</div><div style="font-size:12.5px;color:var(--text-2)">Última sincronización: 13/05/2026 07:32 · Exitosa</div></div>
+                </div>
+                <button class="btn btn-primary btn-sm">🔄 Sincronizar ahora</button>
+              </div>
+              <div class="card-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+                  <div><div style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Campos enviados a Base.com</div>
+                    <div style="font-size:13px;color:var(--text);display:flex;flex-direction:column;gap:4px">
+                      <div>✓ <b>titulo</b> → Nombre del producto</div>
+                      <div>✓ <b>descripcion</b> → Descripción larga</div>
+                      <div>✓ <b>ean</b> → EAN/GTIN</div>
+                      <div>✓ <b>marca</b> → Marca</div>
+                      <div>✓ <b>imagenes</b> → Medios (3 imágenes)</div>
+                      <div>✓ <b>atributos[]</b> → 12 atributos mapeados</div>
+                    </div>
+                  </div>
+                  <div><div style="font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Estado por campo</div>
+                    <div style="font-size:13px;display:flex;flex-direction:column;gap:4px">
+                      <div style="color:var(--accent)">✓ 12 campos sincronizados</div>
+                      <div style="color:var(--warning)">⚠ 2 campos pendientes de valor</div>
+                      <div style="color:var(--danger)">— 0 errores de mapeo</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="page-note">⚠️ El campo <b>ancho_pantalla_pulgadas</b> no tiene valor. Se requiere para publicar en Base.com.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Historial -->
+          <div class="tab-content" id="tab-history">
+            <div style="display:flex;flex-direction:column">
+              <div class="activity-item"><div class="activity-icon edit">✏️</div><div class="activity-text"><div class="main">Actualizada <b>Descripción larga</b> y atributo <b>Bluetooth</b></div><div class="meta">jmbeltramini · 13/05/2026 09:14</div></div></div>
+              <div class="activity-item"><div class="activity-icon sync">🔄</div><div class="activity-text"><div class="main">Sincronización con Base.com exitosa – 14 campos actualizados</div><div class="meta">Sistema · 13/05/2026 07:32</div></div></div>
+              <div class="activity-item"><div class="activity-icon edit">✏️</div><div class="activity-text"><div class="main">Actualizadas imágenes: agregada <b>detalle.jpg</b></div><div class="meta">mrodriguez · 12/05/2026 16:45</div></div></div>
+              <div class="activity-item"><div class="activity-icon create">➕</div><div class="activity-text"><div class="main">Producto creado por importación – "Samsung_Catalogo_Mayo.xlsx"</div><div class="meta">Sistema · 10/05/2026 08:00</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Editor Sidebar -->
+        <div class="editor-sidebar">
+          <div class="completeness-card">
+            <div class="completeness-title">Completitud del Producto</div>
+            <div style="font-size:28px;font-weight:700;color:var(--accent);margin-bottom:12px">92%</div>
+            <div style="margin-bottom:8px">
+              <div class="comp-row"><span class="comp-tab">General</span><span class="comp-pct" style="color:var(--accent)">100%</span></div>
+              <div class="comp-bar"><div class="comp-fill" style="width:100%;background:var(--accent)"></div></div>
+            </div>
+            <div style="margin-bottom:8px">
+              <div class="comp-row"><span class="comp-tab">Atributos</span><span class="comp-pct" style="color:var(--warning)">84%</span></div>
+              <div class="comp-bar"><div class="comp-fill" style="width:84%;background:var(--warning)"></div></div>
+            </div>
+            <div style="margin-bottom:8px">
+              <div class="comp-row"><span class="comp-tab">Medios</span><span class="comp-pct" style="color:var(--accent)">100%</span></div>
+              <div class="comp-bar"><div class="comp-fill" style="width:100%;background:var(--accent)"></div></div>
+            </div>
+            <div>
+              <div class="comp-row"><span class="comp-tab">Canales</span><span class="comp-pct" style="color:var(--warning)">80%</span></div>
+              <div class="comp-bar"><div class="comp-fill" style="width:80%;background:var(--warning)"></div></div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:12px;color:var(--warning);font-weight:500">⚠ 4 campos requeridos sin completar</div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:8px;width:100%;justify-content:center">Ver campos faltantes</button>
+          </div>
+          <div class="card" style="padding:16px">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Información</div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--text-2)">
+              <div><b style="color:var(--text)">Creado:</b> 10/05/2026 por Sistema</div>
+              <div><b style="color:var(--text)">Modificado:</b> Hoy, 09:14 por jmbeltramini</div>
+              <div><b style="color:var(--text)">Familia:</b> Smartphones</div>
+              <div><b style="color:var(--text)">Versión:</b> #8</div>
+            </div>
+          </div>
+          <div class="card" style="padding:16px">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Acciones</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start">📋 Duplicar producto</button>
+              <button class="btn btn-secondary btn-sm" style="justify-content:flex-start">⬇️ Exportar a CSV</button>
+              <button class="btn btn-danger btn-sm" style="justify-content:flex-start">🗑️ Eliminar producto</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SCREEN 4 – FAMILIES & ATTRIBUTES
+    ═════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-families">
+      <div class="families-layout">
+        <!-- Left: family list -->
+        <div class="card" style="padding:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="font-size:14px;font-weight:600">Familias (6)</div>
+            <button class="btn btn-primary btn-sm">+ Nueva</button>
+          </div>
+          <div class="families-list">
+            <div class="list-item active"><span class="name">📱 Smartphones</span><span class="count">312 productos</span></div>
+            <div class="list-item"><span class="name">📺 TV & Audio</span><span class="count">248 productos</span></div>
+            <div class="list-item"><span class="name">💻 Computación</span><span class="count">278 productos</span></div>
+            <div class="list-item"><span class="name">🧺 Electrodomésticos</span><span class="count">410 productos</span></div>
+            <div class="list-item"><span class="name">🎮 Gaming</span><span class="count">88 productos</span></div>
+            <div class="list-item"><span class="name">📷 Fotografía</span><span class="count">72 productos</span></div>
+          </div>
+        </div>
+
+        <!-- Right: family detail -->
+        <div>
+          <div class="card" style="margin-bottom:16px;padding:16px 20px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div><div style="font-size:16px;font-weight:700;color:var(--text)">📱 Smartphones</div><div style="font-size:12.5px;color:var(--text-2);margin-top:2px">312 productos · 4 grupos · 28 atributos</div></div>
+              <div style="display:flex;gap:8px"><button class="btn btn-secondary btn-sm">✏️ Editar familia</button><button class="btn btn-primary btn-sm">+ Agregar grupo</button></div>
+            </div>
+          </div>
+
+          <!-- Attribute group 1 -->
+          <div class="attr-group-card">
+            <div class="attr-group-header">
+              <span class="attr-group-name">📡 Conectividad y Red</span>
+              <div style="display:flex;gap:8px;align-items:center"><span style="font-size:12px;color:var(--text-2)">4 atributos</span><button class="btn btn-ghost btn-sm">+ Atributo</button></div>
+            </div>
+            <div class="attr-group-body">
+              <div class="attr-row header"><div>Atributo</div><div>Tipo</div><div>Requerido</div><div>Alias Base.com</div><div></div></div>
+              <div class="attr-row"><div>Tecnología de red</div><div><span class="attr-type-pill">📋 Selección única</span></div><div><span class="badge badge-active" style="font-size:11px">Sí</span></div><div style="font-size:12px;color:var(--text-2)">red_tecnologia</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+              <div class="attr-row"><div>Conectividad WiFi</div><div><span class="attr-type-pill">📋 Selección única</span></div><div><span class="badge badge-active" style="font-size:11px">Sí</span></div><div style="font-size:12px;color:var(--text-2)">wifi_version</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+              <div class="attr-row"><div>Bluetooth (versión)</div><div><span class="attr-type-pill">📝 Texto</span></div><div><span class="badge badge-draft" style="font-size:11px">No</span></div><div style="font-size:12px;color:var(--text-2)">bluetooth_version</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+              <div class="attr-row"><div>NFC</div><div><span class="attr-type-pill">🔘 Sí/No</span></div><div><span class="badge badge-draft" style="font-size:11px">No</span></div><div style="font-size:12px;color:var(--text-2)">nfc</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+            </div>
+          </div>
+
+          <!-- Attribute group 2 -->
+          <div class="attr-group-card">
+            <div class="attr-group-header">
+              <span class="attr-group-name">⚙️ Hardware</span>
+              <div style="display:flex;gap:8px;align-items:center"><span style="font-size:12px;color:var(--text-2)">5 atributos</span><button class="btn btn-ghost btn-sm">+ Atributo</button></div>
+            </div>
+            <div class="attr-group-body">
+              <div class="attr-row header"><div>Atributo</div><div>Tipo</div><div>Requerido</div><div>Alias Base.com</div><div></div></div>
+              <div class="attr-row"><div>Procesador</div><div><span class="attr-type-pill">📝 Texto</span></div><div><span class="badge badge-active" style="font-size:11px">Sí</span></div><div style="font-size:12px;color:var(--text-2)">procesador</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+              <div class="attr-row"><div>RAM (GB)</div><div><span class="attr-type-pill">🔢 Número</span></div><div><span class="badge badge-active" style="font-size:11px">Sí</span></div><div style="font-size:12px;color:var(--text-2)">ram_gb</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+              <div class="attr-row"><div>Almacenamiento (GB)</div><div><span class="attr-type-pill">🔢 Número</span></div><div><span class="badge badge-active" style="font-size:11px">Sí</span></div><div style="font-size:12px;color:var(--text-2)">storage_gb</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+              <div class="attr-row"><div>Batería (mAh)</div><div><span class="attr-type-pill">🔢 Número</span></div><div><span class="badge badge-draft" style="font-size:11px">No</span></div><div style="font-size:12px;color:var(--text-2)">bateria_mah</div><div><button class="btn btn-ghost btn-sm">⋯</button></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SCREEN 5 – IMPORT
+    ═════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-import">
+
+      <!-- Steps -->
+      <div class="import-steps">
+        <div class="step"><div class="step-num active">1</div><span class="step-label active">Subir archivo</span></div>
+        <div class="step-connector"></div>
+        <div class="step"><div class="step-num pending">2</div><span class="step-label pending">Mapear columnas</span></div>
+        <div class="step-connector"></div>
+        <div class="step"><div class="step-num pending">3</div><span class="step-label pending">Validar</span></div>
+        <div class="step-connector"></div>
+        <div class="step"><div class="step-num pending">4</div><span class="step-label pending">Confirmar e importar</span></div>
+      </div>
+
+      <div class="two-col" style="align-items:start">
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><div class="card-title">Paso 1 – Subir archivo</div></div>
+            <div class="card-body">
+              <div class="upload-zone" style="margin-bottom:16px">
+                <div class="icon">📊</div>
+                <div class="title">Arrastrá tu archivo Excel o CSV aquí</div>
+                <div class="sub">Formatos: .xlsx, .xls, .csv (separador , o ;) · UTF-8 o Windows-1252</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border)">
+                <span style="font-size:20px">📄</span>
+                <div style="flex:1"><div style="font-size:13.5px;font-weight:500">Samsung_Catalogo_Mayo2026.xlsx</div><div style="font-size:12px;color:var(--text-2)">2.4 MB · 387 filas detectadas</div></div>
+                <span class="badge badge-active">✓ Listo</span>
+                <button class="btn btn-ghost btn-sm">✕</button>
+              </div>
+              <div style="margin-top:16px">
+                <div class="form-group">
+                  <label class="form-label">Familia de producto para esta importación</label>
+                  <select class="form-select"><option selected>Smartphones</option><option>TV & Audio</option><option>Computación</option><option>Electrodomésticos</option></select>
+                  <div class="form-hint">Los atributos disponibles para el mapeo dependen de la familia seleccionada.</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Hoja del archivo (para Excel)</label>
+                  <select class="form-select"><option>Hoja1 (seleccionada)</option><option>Hoja2</option></select>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center">Continuar → Mapear columnas</button>
+            </div>
+          </div>
+
+          <!-- Preview mapping (step 2 preview) -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Mapeo de Columnas (Preview)</div><span class="badge badge-info">Paso 2</span></div>
+            <div class="card-body" style="padding:0">
+              <table class="mapping-table" style="width:100%">
+                <thead><tr><th>Columna en el archivo</th><th>Ejemplo de dato</th><th>Campo del PIM</th></tr></thead>
+                <tbody>
+                  <tr><td>Nombre Producto</td><td style="color:var(--text-2)">Galaxy A55 5G 256GB…</td><td><select class="form-select" style="padding:4px 8px;font-size:12.5px"><option selected>Nombre del producto</option></select></td></tr>
+                  <tr><td>COD_SAP</td><td style="color:var(--text-2)">SM-A556ELBAARL</td><td><select class="form-select" style="padding:4px 8px;font-size:12.5px"><option selected>SKU Interno</option></select></td></tr>
+                  <tr><td>EAN</td><td style="color:var(--text-2)">7509218150215</td><td><select class="form-select" style="padding:4px 8px;font-size:12.5px"><option selected>EAN / GTIN</option></select></td></tr>
+                  <tr><td>MEMORIA_RAM</td><td style="color:var(--text-2)">8</td><td><select class="form-select" style="padding:4px 8px;font-size:12.5px"><option selected>RAM (GB)</option></select></td></tr>
+                  <tr><td>MODELO</td><td style="color:var(--text-2)">SM-A556ELBAARL</td><td><select class="form-select" style="padding:4px 8px;font-size:12.5px"><option selected>Modelo</option></select></td></tr>
+                  <tr><td>COD_INTERNO</td><td style="color:var(--text-2)">SAM-2026-A55</td><td><select class="form-select" style="padding:4px 8px;font-size:12.5px"><option>— Ignorar columna —</option><option selected>— Ignorar columna —</option></select></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Validation preview and history -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Resultado de Validación (Preview)</div></div>
+            <div class="card-body" style="padding:0">
+              <table style="width:100%;border-collapse:collapse">
+                <tbody>
+                  <tr><td style="padding:12px 16px;border-bottom:1px solid var(--border)"><div style="font-size:28px;font-weight:700;color:var(--accent)">352</div><div style="font-size:12px;color:var(--text-2)">Productos a crear</div></td></tr>
+                  <tr><td style="padding:12px 16px;border-bottom:1px solid var(--border)"><div style="font-size:28px;font-weight:700;color:var(--secondary)">24</div><div style="font-size:12px;color:var(--text-2)">Productos a actualizar (SKU existente)</div></td></tr>
+                  <tr><td style="padding:12px 16px;border-bottom:1px solid var(--border)"><div style="font-size:28px;font-weight:700;color:var(--warning)">8</div><div style="font-size:12px;color:var(--text-2)">Filas con advertencias</div></td></tr>
+                  <tr><td style="padding:12px 16px"><div style="font-size:28px;font-weight:700;color:var(--danger)">3</div><div style="font-size:12px;color:var(--text-2)">Filas con errores (se omitirán)</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Validation errors -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Errores y Advertencias</div></div>
+            <div class="card-body" style="padding:0">
+              <table style="width:100%;border-collapse:collapse" class="mapping-table">
+                <thead><tr><th>Fila</th><th>Campo</th><th>Problema</th></tr></thead>
+                <tbody>
+                  <tr class="validation-row error"><td>23</td><td>EAN</td><td style="color:var(--danger);font-size:12.5px">EAN inválido (dígito verificador incorrecto)</td></tr>
+                  <tr class="validation-row error"><td>67</td><td>SKU</td><td style="color:var(--danger);font-size:12.5px">SKU duplicado en el mismo archivo</td></tr>
+                  <tr class="validation-row warn"><td>12</td><td>RAM (GB)</td><td style="color:var(--warning);font-size:12.5px">Valor "8GB" – se convertirá a número 8</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Import history -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Historial de Importaciones</div></div>
+            <div class="card-body" style="padding:8px 16px">
+              <div class="log-entry"><div class="log-status ok"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">Philips_Enero2026.xlsx</div><div style="font-size:11.5px;color:var(--text-2)">48 creados, 2 errores · 13/05 09:14</div></div><button class="btn btn-ghost btn-sm">Log</button></div>
+              <div class="log-entry"><div class="log-status ok"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">Samsung_Catalogo_Abril.xlsx</div><div style="font-size:11.5px;color:var(--text-2)">312 creados, 0 errores · 08/05 10:30</div></div><button class="btn btn-ghost btn-sm">Log</button></div>
+              <div class="log-entry"><div class="log-status error"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">LG_TV_Marzo.csv</div><div style="font-size:11.5px;color:var(--text-2)">Error: encoding inválido · 02/05 14:11</div></div><button class="btn btn-ghost btn-sm">Log</button></div>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary" style="justify-content:center">⬇️ Descargar plantilla de importación (Smartphones)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SCREEN 6 – SYNC BASE.COM
+    ═════════════════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-sync">
+
+      <!-- Status overview -->
+      <div class="three-col" style="margin-bottom:20px">
+        <div class="sync-status-card"><div class="sync-dot ok"></div><div class="sync-info"><div class="title">Conexión con Base.com</div><div class="sub">Activa · API conectada · Latencia: 142ms</div></div></div>
+        <div class="sync-status-card"><div class="sync-dot warn"></div><div class="sync-info"><div class="title">Próxima sincronización automática</div><div class="sub">En 1h 47min (cada 4 horas) · Configurable</div></div></div>
+        <div class="sync-status-card"><div class="sync-dot error"></div><div class="sync-info"><div class="title">3 productos con error</div><div class="sub">Requieren revisión manual</div></div><button class="btn btn-secondary btn-sm" style="margin-left:auto">Ver</button></div>
+      </div>
+
+      <div class="two-col" style="align-items:start">
+        <div>
+          <div class="table-container">
+            <div class="table-toolbar" style="justify-content:space-between">
+              <div style="display:flex;gap:8px;align-items:center">
+                <div class="search-wrap" style="max-width:220px"><input class="search-input" type="text" placeholder="Buscar…"></div>
+                <button class="btn btn-secondary btn-sm">⚡ Estado</button>
+              </div>
+              <button class="btn btn-primary btn-sm">🔄 Sincronizar todos pendientes (127)</button>
+            </div>
+            <table>
+              <thead><tr><th><input type="checkbox" class="cb"></th><th>Producto</th><th>Familia</th><th>Estado Sync</th><th>Último intento</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><input type="checkbox" class="cb"></td><td><div class="product-name" onclick="showScreen('editor')">Samsung Galaxy A55 5G 256GB</div><div class="product-sku">SKU-00148</div></td><td><span class="badge badge-info" style="font-size:11px">Smartphones</span></td><td><span class="badge badge-synced">✓ Sincronizado</span></td><td style="font-size:12.5px;color:var(--text-2)">Hoy 07:32</td><td><button class="btn btn-ghost btn-sm">Ver en Base.com</button></td></tr>
+                <tr><td><input type="checkbox" class="cb"></td><td><div class="product-name" onclick="showScreen('editor')">Sony WH-1000XM5</div><div class="product-sku">SKU-00891</div></td><td><span class="badge badge-info" style="font-size:11px">Audio</span></td><td><span class="badge badge-error">✕ Error</span></td><td style="font-size:12.5px;color:var(--text-2)">Hoy 07:32</td><td><button class="btn btn-ghost btn-sm" style="color:var(--danger)">Ver error</button></td></tr>
+                <tr><td><input type="checkbox" class="cb"></td><td><div class="product-name" onclick="showScreen('editor')">Smart TV LG 55" OLED 4K</div><div class="product-sku">SKU-00312</div></td><td><span class="badge badge-info" style="font-size:11px">TV & Audio</span></td><td><span class="badge badge-pending">⏳ Pendiente</span></td><td style="font-size:12.5px;color:var(--text-2)">—</td><td><button class="btn btn-ghost btn-sm">Sync ahora</button></td></tr>
+                <tr><td><input type="checkbox" class="cb"></td><td><div class="product-name" onclick="showScreen('editor')">Lavarropas Whirlpool 9kg</div><div class="product-sku">SKU-00567</div></td><td><span class="badge badge-info" style="font-size:11px">Electrodomésticos</span></td><td><span class="badge badge-synced">✓ Sincronizado</span></td><td style="font-size:12.5px;color:var(--text-2)">Hoy 07:32</td><td><button class="btn btn-ghost btn-sm">Ver en Base.com</button></td></tr>
+                <tr><td><input type="checkbox" class="cb"></td><td><div class="product-name" onclick="showScreen('editor')">Auriculares Xiaomi Buds 4 Pro</div><div class="product-sku">SKU-01102</div></td><td><span class="badge badge-info" style="font-size:11px">Audio</span></td><td><span class="badge badge-error">✕ Error</span></td><td style="font-size:12.5px;color:var(--text-2)">Hoy 07:32</td><td><button class="btn btn-ghost btn-sm" style="color:var(--danger)">Ver error</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <!-- Error detail -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">⚠ Detalle de Error</div></div>
+            <div class="card-body">
+              <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:8px">Sony WH-1000XM5 (SKU-00891)</div>
+              <div style="background:#FFF5F5;border:1px solid #FECACA;border-radius:var(--radius);padding:12px;font-size:12.5px;color:var(--danger);font-family:monospace;margin-bottom:12px">
+                400 Bad Request: Campo "color_hex" – valor "#1A1A1A" no es un color válido para Base.com. Se esperaba un nombre de color de la lista oficial.
+              </div>
+              <div style="font-size:12.5px;color:var(--text-2);margin-bottom:12px">Acción sugerida: corregir el valor del atributo "Color" del producto para que coincida con el listado de colores aceptados por Base.com.</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-secondary btn-sm" onclick="showScreen('editor')">✏️ Editar producto</button>
+                <button class="btn btn-secondary btn-sm">🔄 Reintentar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sync config -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">⚙️ Configuración de Sync</div></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="toggle">
+                  <div class="toggle-track on"><div class="toggle-thumb"></div></div>
+                  <span class="toggle-label">Sincronización automática</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Frecuencia</label>
+                <select class="form-select"><option>Cada hora</option><option selected>Cada 4 horas</option><option>Cada 12 horas</option><option>Una vez al día</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notificaciones de error</label>
+                <select class="form-select"><option selected>Email inmediato</option><option>Email diario</option><option>Solo en dashboard</option></select>
+              </div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center">Guardar configuración</button>
+            </div>
+          </div>
+
+          <!-- Sync log -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Log de Sincronizaciones</div></div>
+            <div class="card-body" style="padding:8px 16px">
+              <div class="log-entry"><div class="log-status ok"></div><div style="flex:1"><div style="font-size:13px">Sync automático – 124 OK, 3 errores</div><div style="font-size:11.5px;color:var(--text-2)">Hoy 06:00</div></div></div>
+              <div class="log-entry"><div class="log-status ok"></div><div style="flex:1"><div style="font-size:13px">Sync automático – 89 OK, 0 errores</div><div style="font-size:11.5px;color:var(--text-2)">Ayer 18:00</div></div></div>
+              <div class="log-entry"><div class="log-status ok"></div><div style="flex:1"><div style="font-size:13px">Sync manual – 48 OK, 1 error</div><div style="font-size:11.5px;color:var(--text-2)">Ayer 10:23</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+const screens = ['dashboard','catalog','editor','families','import','sync'];
+const topbarData = {
+  dashboard: { title: 'Dashboard', breadcrumb: '' },
+  catalog:   { title: 'Catálogo de Productos', breadcrumb: 'Catálogo' },
+  editor:    { title: 'Samsung Galaxy A55 5G 256GB Azul', breadcrumb: 'Catálogo → Producto' },
+  families:  { title: 'Familias y Atributos', breadcrumb: 'Configuración' },
+  import:    { title: 'Importar Productos', breadcrumb: 'Importación' },
+  sync:      { title: 'Sincronización Base.com', breadcrumb: 'Integración' },
+};
+
+function showScreen(id) {
+  screens.forEach(s => {
+    const el = document.getElementById('screen-' + s);
+    if (el) el.classList.toggle('active', s === id);
+    const nav = document.querySelector(`.nav-item[onclick="showScreen('${s}')"]`);
+    if (nav) nav.classList.toggle('active', s === id);
+  });
+  const d = topbarData[id] || {};
+  document.getElementById('topbar-title').textContent = d.title || id;
+  window.scrollTo(0,0);
+  document.querySelector('.content').scrollTop = 0;
+}
+
+function showTab(el, tabId) {
+  const container = el.closest('.editor-main') || el.closest('.tab-content')?.parentNode?.closest('.editor-main') || document.getElementById('screen-editor');
+  const allTabs = (container || document).querySelectorAll('.tab');
+  const allContents = (container || document).querySelectorAll('.tab-content');
+  allTabs.forEach(t => t.classList.remove('active'));
+  allContents.forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const tc = document.getElementById(tabId);
+  if (tc) tc.classList.add('active');
+}
+
+function toggleSelectBar(cb) {
+  const bar = document.getElementById('select-bar');
+  if (bar) bar.classList.toggle('visible', cb.checked);
+}
+
+function setView(type) {
+  ['table','cards','kanban'].forEach(v => {
+    const el = document.getElementById('catalog-' + v + '-view');
+    if (el) el.style.display = v === type ? 'block' : 'none';
+    const btn = document.getElementById('view-' + v);
+    if (btn) {
+      btn.style.background = v === type ? '#EEF2FF' : '';
+      btn.style.color = v === type ? 'var(--primary)' : '';
+    }
+  });
+}
+</script>
+</body>
+</html>
