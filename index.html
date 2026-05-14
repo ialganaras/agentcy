@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>agentcy · índice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f4efe4;
+    --paper-2: #ece5d4;
+    --ink: #1f1c16;
+    --ink-soft: #5c554613;
+    --muted: #7d7461;
+    --rust: #b8462a;
+    --rust-deep: #8f3520;
+    --line: #d8cfb9;
+    --card: #fbf8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 18%, #ffffff55 0%, transparent 40%),
+      radial-gradient(circle at 88% 8%, #e0d6bd66 0%, transparent 35%);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 64px 32px 96px; }
+
+  /* ---- header ---- */
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 28px; margin-bottom: 8px; }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--rust); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 600; font-size: clamp(48px, 9vw, 104px);
+    line-height: 0.92; letter-spacing: -0.02em;
+  }
+  h1 em { font-style: italic; font-weight: 400; color: var(--rust); }
+  .sub {
+    margin-top: 18px; max-width: 46ch; color: var(--muted);
+    font-size: 15px;
+  }
+  .meta-row {
+    margin-top: 26px; display: flex; gap: 28px; flex-wrap: wrap;
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--muted);
+  }
+  .meta-row b { color: var(--ink); font-weight: 500; }
+
+  /* ---- controls ---- */
+  .controls {
+    margin: 38px 0 30px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+  }
+  #q {
+    flex: 1; min-width: 220px;
+    background: var(--card); border: 1.5px solid var(--line);
+    padding: 12px 16px; font-family: "IBM Plex Mono", monospace; font-size: 13px;
+    color: var(--ink); border-radius: 2px;
+  }
+  #q:focus { outline: none; border-color: var(--rust); }
+  #q::placeholder { color: #b3a98f; }
+  .count-pill {
+    font-family: "IBM Plex Mono", monospace; font-size: 12px;
+    color: var(--muted); white-space: nowrap;
+  }
+
+  /* ---- list ---- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  a.card {
+    background: var(--card); padding: 22px 24px 20px; text-decoration: none; color: inherit;
+    display: flex; flex-direction: column; gap: 10px; min-height: 132px;
+    transition: background 0.18s ease, transform 0.18s ease;
+    position: relative;
+  }
+  a.card:hover { background: #fff; }
+  a.card:hover .arrow { transform: translate(3px, -3px); color: var(--rust); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .fname {
+    font-family: "Fraunces", serif; font-size: 21px; font-weight: 500;
+    letter-spacing: -0.01em; line-height: 1.15;
+  }
+  .arrow {
+    font-family: "IBM Plex Mono", monospace; font-size: 16px; color: var(--muted);
+    transition: transform 0.18s ease, color 0.18s ease; flex-shrink: 0;
+  }
+  .fpath {
+    font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--muted);
+    margin-top: auto; word-break: break-all;
+  }
+  .fpath .dir { color: var(--rust); }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--line); padding: 2px 7px; border-radius: 2px;
+    align-self: flex-start;
+  }
+
+  /* ---- states ---- */
+  .state {
+    padding: 60px 20px; text-align: center; font-family: "IBM Plex Mono", monospace;
+    font-size: 13px; color: var(--muted); border: 1px dashed var(--line);
+  }
+  .state b { color: var(--ink); font-weight: 500; }
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid var(--line); border-top-color: var(--rust);
+    border-radius: 50%; display: inline-block; animation: spin 0.7s linear infinite;
+    vertical-align: -3px; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer {
+    margin-top: 54px; padding-top: 22px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--muted);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  footer a { color: var(--rust); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  ::selection { background: var(--rust); color: var(--paper); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Repositorio · GitHub Pages</div>
+    <h1>agen<em>cy</em></h1>
+    <p class="sub">Índice vivo de los HTML publicados en este repo. Se arma solo leyendo el contenido del repositorio &mdash; sumás un archivo, aparece acá.</p>
+    <div class="meta-row">
+      <span>repo&nbsp;&nbsp;<b id="m-repo">&mdash;</b></span>
+      <span>branch&nbsp;&nbsp;<b id="m-branch">&mdash;</b></span>
+      <span>archivos&nbsp;&nbsp;<b id="m-count">&mdash;</b></span>
+    </div>
+  </header>
+
+  <div class="controls">
+    <input id="q" type="text" placeholder="filtrar por nombre o carpeta…" autocomplete="off" spellcheck="false" />
+    <span class="count-pill" id="pill"></span>
+  </div>
+
+  <div id="out">
+    <div class="state"><span class="spinner"></span>Leyendo el repositorio…</div>
+  </div>
+
+  <footer>
+    <span>índice auto-generado · sin mantenimiento manual</span>
+    <span id="f-link"></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // --- Detección automática de repo desde la URL de GitHub Pages ---
+  // Funciona en usuario.github.io/repo/ y también con dominio propio (fallback abajo).
+  var OWNER, REPO;
+  var host = location.hostname;        // ialganaras.github.io
+  var seg  = location.pathname.split("/").filter(Boolean); // ["agentcy", ...]
+
+  if (host.endsWith("github.io")) {
+    OWNER = host.split(".")[0];
+    REPO  = seg[0] || (OWNER + ".github.io");
+  } else {
+    // Dominio propio: completá estos dos valores a mano.
+    OWNER = "ialganaras";
+    REPO  = "agentcy";
+  }
+  var BRANCH = "main";
+
+  var out = document.getElementById("out");
+  var q = document.getElementById("q");
+  var pill = document.getElementById("pill");
+  var allFiles = [];
+
+  document.getElementById("m-repo").textContent = OWNER + "/" + REPO;
+  document.getElementById("m-branch").textContent = BRANCH;
+  document.getElementById("f-link").innerHTML =
+    '<a href="https://github.com/' + OWNER + "/" + REPO + '" target="_blank" rel="noopener">github.com/' + OWNER + "/" + REPO + "</a>";
+
+  var api = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/git/trees/" + BRANCH + "?recursive=1";
+
+  fetch(api)
+    .then(function (r) {
+      if (r.status === 403) throw new Error("rate-limit");
+      if (r.status === 404) throw new Error("not-found");
+      if (!r.ok) throw new Error("http-" + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      if (!data.tree) throw new Error("no-tree");
+      allFiles = data.tree
+        .filter(function (n) {
+          return n.type === "blob" &&
+                 /\.html?$/i.test(n.path) &&
+                 n.path.toLowerCase() !== "index.html";
+        })
+        .map(function (n) {
+          var parts = n.path.split("/");
+          var file = parts.pop();
+          return {
+            path: n.path,
+            file: file,
+            dir: parts.join("/"),
+            name: file.replace(/\.html?$/i, "").replace(/[-_]+/g, " ").trim()
+          };
+        })
+        .sort(function (a, b) { return a.path.localeCompare(b.path); });
+
+      document.getElementById("m-count").textContent = allFiles.length;
+      render();
+    })
+    .catch(function (err) {
+      var msg = err.message;
+      if (msg === "rate-limit") {
+        out.innerHTML = '<div class="state">GitHub te frenó por <b>rate limit</b> (60 consultas/hora sin login).<br>Esperá un rato y recargá &mdash; es temporal.</div>';
+      } else if (msg === "not-found") {
+        out.innerHTML = '<div class="state">No encontré el repo <b>' + OWNER + "/" + REPO + '</b>.<br>¿Es público y el branch es <b>' + BRANCH + '</b>?</div>';
+      } else {
+        out.innerHTML = '<div class="state">No se pudo leer el repo.<br><b>' + msg + '</b></div>';
+      }
+      document.getElementById("m-count").textContent = "—";
+    });
+
+  function render() {
+    var term = q.value.trim().toLowerCase();
+    var list = allFiles.filter(function (f) {
+      return !term || f.path.toLowerCase().indexOf(term) > -1;
+    });
+
+    pill.textContent = term
+      ? list.length + " / " + allFiles.length
+      : allFiles.length + (allFiles.length === 1 ? " archivo" : " archivos");
+
+    if (allFiles.length === 0) {
+      out.innerHTML = '<div class="state">El repo todavía no tiene archivos <b>.html</b> (aparte de este índice).<br>Subí uno y recargá.</div>';
+      return;
+    }
+    if (list.length === 0) {
+      out.innerHTML = '<div class="state">Nada coincide con <b>' + term + '</b>.</div>';
+      return;
+    }
+
+    var html = '<div class="grid">';
+    list.forEach(function (f) {
+      var pathLabel = f.dir
+        ? '<span class="dir">' + f.dir + '/</span>' + f.file
+        : f.file;
+      html +=
+        '<a class="card" href="./' + f.path + '">' +
+          '<div class="card-top">' +
+            '<span class="fname">' + esc(f.name) + '</span>' +
+            '<span class="arrow">&#8599;</span>' +
+          '</div>' +
+          (f.dir ? '<span class="tag">' + esc(f.dir.split("/")[0]) + '</span>' : '<span class="tag">raíz</span>') +
+          '<span class="fpath">' + pathLabel + '</span>' +
+        '</a>';
+    });
+    html += "</div>";
+    out.innerHTML = html;
+  }
+
+  function esc(s) {
+    return s.replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  q.addEventListener("input", render);
+})();
+</script>
+</body>
+</html>
